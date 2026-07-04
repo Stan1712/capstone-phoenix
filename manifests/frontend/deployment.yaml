@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: frontend
+  namespace: taskapp
+
+spec:
+  replicas: 2
+
+  strategy:
+
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+  selector:
+    matchLabels:
+      app: frontend
+
+  template:
+
+    metadata:
+      labels:
+        app: frontend
+
+    spec:
+
+      topologySpreadConstraints:
+
+      - maxSkew: 1
+
+        topologyKey: kubernetes.io/hostname
+
+        whenUnsatisfiable: DoNotSchedule
+
+        labelSelector:
+          matchLabels:
+            app: frontend
+
+      containers:
+
+      - name: frontend
+
+        image: ghcr.io/ts-a-devops/taskapp-frontend:YOUR_IMAGE_TAG
+
+        ports:
+
+        - containerPort: 80
+
+        resources:
+
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+
+        readinessProbe:
+
+          httpGet:
+            path: /
+            port: 80
+
+        livenessProbe:
+
+          httpGet:
+            path: /
+            port: 80

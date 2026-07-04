@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: taskapp-migrate
+  namespace: taskapp
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+
+      containers:
+      - name: migrate
+
+        image: ghcr.io/ts-a-devops/taskapp-backend:YOUR_IMAGE_TAG
+
+        envFrom:
+        - configMapRef:
+            name: taskapp-config
+
+        - secretRef:
+            name: taskapp-secret
+
+        command:
+        - flask
+        - db
+        - upgrade

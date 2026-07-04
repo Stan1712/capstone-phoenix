@@ -1,0 +1,16 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Upgrade packages
+  apt:
+    upgrade: dist
+
+- name: Install required packages
+  apt:
+    name:
+      - curl
+      - vim
+      - git
+      - unzip
+    state: present

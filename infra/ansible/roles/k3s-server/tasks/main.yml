@@ -1,0 +1,16 @@
+- name: Install K3s Server
+  shell: |
+    curl -sfL https://get.k3s.io | sh -
+
+- name: Wait for node token
+  wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
+
+- name: Read node token
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: node_token
+
+- name: Save token as fact
+  set_fact:
+    k3s_token: "{{ node_token.content | b64decode }}"
